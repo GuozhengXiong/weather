@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- axios接口 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <!-- vue接口 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>天知道案例</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: url(images/网页1.webp);
+        }
+        
+        .title {
+            width: 100px;
+            height: 40px;
+            color: skyblue;
+            font-size: 30px;
+            margin: 100px auto 0px;
+        }
+        
+        .search {
+            width: 400px;
+            height: 30px;
+            margin: 5px auto;
+        }
+        
+        .search input {
+            width: 350px;
+            height: 30px;
+            border: skyblue solid 2px;
+            outline: none;
+        }
+        
+        .search button {
+            color: white;
+            border: none;
+            width: 50px;
+            height: 30px;
+            background-color: skyblue;
+            cursor: pointer;
+        }
+        
+        .search button:active {
+            color: red;
+        }
+        
+        .city {
+            width: 400px;
+            height: 20px;
+            margin: 0px auto;
+        }
+        
+        .city a {
+            text-decoration: none;
+            font-size: 10px;
+            color: gray;
+        }
+        
+        .city a:hover {
+            color: red;
+        }
+        
+        .weather li {
+            float: left;
+            width: 200px;
+            height: 150px;
+            list-style: none;
+            margin-top: 20px;
+        }
+        
+        .weather li:first-child {
+            margin-left: 100px;
+        }
+        
+        .weather li p:nth-child(1) {
+            color: orange;
+            margin: 5px 0px;
+            text-align: center;
+            font-size: 25px;
+        }
+        
+        .weather li p:nth-child(2) {
+            color: orange;
+            font-size: 10px;
+            margin: 20px 0px;
+            text-align: center;
+        }
+        
+        .weather li p:nth-child(3) {
+            color: gray;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="title">天&nbsp知&nbsp道</div>
+        <div class="search">
+            <input type="text" v-model="city" placeholder="请输入查询的天气" @keyup.enter="searchWeather"><button @click="changeCity(city)">搜索</button>
+        </div>
+        <div class="city">
+            <a @click="changeCity('北京')" href="javascript:;">北京</a>
+            <a @click="changeCity('上海')" href="javascript:;">上海</a>
+            <a @click="changeCity('广州')" href="javascript:;">广州</a>
+            <a @click="changeCity('深圳')" href="javascript:;">深圳</a>
+        </div>
+        <div>
+            <ul class="weather">
+                <li v-for="item in weatherList">
+                    <p>{{item.type}}</p>
+                    <p>{{item.low}}~{{item.high}}</p>
+                    <p>{{item.date}}</p>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                city: '',
+                weatherList: []
+            },
+            methods: {
+                searchWeather: function() {
+                    var that = this;
+                    // console.log("天气查询");
+                    // console.log(this.city);
+                    axios.get("http://wthrcdn.etouch.cn/weather_mini?city=" + this.city).then(function(response) {
+                        // console.log(response.data.data.forecast);
+                        that.weatherList = response.data.data.forecast;
+                    }).catch(function(err) {
+                        alert("没有该城市")
+                    })
+                },
+                changeCity: function(city) {
+                    this.city = city;
+                    this.searchWeather();
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
